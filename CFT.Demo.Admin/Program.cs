@@ -23,7 +23,7 @@ namespace CFT.Demo.Admin
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-            .ConfigureAppConfiguration((hostingContext, config) =>
+            .ConfigureAppConfiguration((hostingContext, config) =>  //读取配置
             {
                 //获取当前应用程序路径
                 var path = hostingContext.HostingEnvironment.ContentRootPath+"\\Configs\\questUrl.json";
@@ -44,7 +44,13 @@ namespace CFT.Demo.Admin
                 //}); 
                 #endregion
                 webBuilder.UseStartup<Startup>()
-                          .ConfigureLogging(logging => 
+                          .UseKestrel(options => //用于指定服务器使用Kestrel 
+                          {
+                              //限制请求正文的最大值
+                              options.Limits.MaxRequestBodySize = 10 * 1024;
+                          })  
+                          //.UseContentRoot() 为应用程序指定根目录 需注意这和StaticFiles的根是不同的,虽然默认情况下StaticFiles的根是以ContentRoot为依据([ContentRoot/wwwroot])
+                          .ConfigureLogging(logging => //配置日志处理程序
                           {
                               //移除已经注册的其他日志处理程序
                               logging.ClearProviders();
