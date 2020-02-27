@@ -1,0 +1,7 @@
+{
+  "testWebUrl": "http://www.test.com",
+  "testB": {
+    "TestBUrl1": "http://www.testBUrl1.com",
+    "TestBUrl2": "http://www.testBUrl2.com"
+  }
+}
