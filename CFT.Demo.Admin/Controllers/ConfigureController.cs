@@ -6,6 +6,7 @@ using CFT.Demo.Admin.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace CFT.Demo.Admin.Controllers
 {
@@ -45,7 +46,15 @@ namespace CFT.Demo.Admin.Controllers
         [HttpGet]
         public string GetStr(string option)
         {
+         
             _logger.LogInformation(option);
+            return "";
+        }
+        [Route("IOCTest")]
+        [HttpGet]
+        public string IOCTest()
+        {
+            var test = HttpContext.RequestServices.GetRequiredService<ITest>();
             return "";
         }
     }

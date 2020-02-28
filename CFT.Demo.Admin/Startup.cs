@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CFT.Demo.Admin.Filters;
+using CFT.Demo.Admin.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -21,7 +22,8 @@ namespace CFT.Demo.Admin
         }
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<IStartupFilter, RequestSetOptionsStartupFilter>();
+            //services.AddTransient<IStartupFilter, RequestSetOptionsStartupFilter>();
+            services.AddTransient<ITest, Test>();
             services.AddControllers();
         }
 
@@ -45,6 +47,47 @@ namespace CFT.Demo.Admin
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            #region Middlewares
+            //中间件顺序是按照注册顺序 1->2->3->2->1 
+            //每一个Use方法,都是在await next(); 前 后执行操作
+
+            //context HttpContext
+            //next 管道中的下一个委托
+            app.Use(async(context, next) => 
+            {
+                Console.WriteLine("Middleware one start");
+                //调用下一个中间件
+                await next();
+                Console.WriteLine("Middleware one end");
+            });
+
+            app.Use(async (context, next) =>
+            {
+                Console.WriteLine("Middleware two start");
+                //调用下一个中间件
+                await next();
+                Console.WriteLine("Middleware two end");
+            });
+
+            //Map 扩展用作约定来创建管道分支
+            //Map 基于给定请求路径的匹配项来创建请求管道分支
+            app.Map("/path1", builder => 
+            {
+                builder.Use(async (context, next) => 
+                {
+                    Console.WriteLine("我是path1分支 start");
+                    await next();
+                    Console.WriteLine("我是path1分支 end");
+                });
+            });
+
+            //Run 终端中间件
+            app.Run(async context =>
+            {
+                await context.Response.WriteAsync("request end");
+            });
+            #endregion
 
 
             //注入静态文件中间件
