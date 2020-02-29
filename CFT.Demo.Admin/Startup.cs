@@ -83,10 +83,10 @@ namespace CFT.Demo.Admin
             });
 
             //Run ÖÕ¶ËÖÐ¼ä¼þ
-            app.Run(async context =>
-            {
-                await context.Response.WriteAsync("request end");
-            });
+            //app.Run(async context =>
+            //{
+            //    await context.Response.WriteAsync("request end");
+            //});
             #endregion
 
 

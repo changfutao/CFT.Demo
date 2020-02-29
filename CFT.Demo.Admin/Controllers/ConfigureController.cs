@@ -57,5 +57,10 @@ namespace CFT.Demo.Admin.Controllers
             var test = HttpContext.RequestServices.GetRequiredService<ITest>();
             return "";
         }
+        [HttpGet(template:"Test1")]
+        public string Test()
+        {
+            return "test";
+        }
     }
 }
