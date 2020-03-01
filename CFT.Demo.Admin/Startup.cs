@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using CFT.Demo.Admin.Extensions;
 
 namespace CFT.Demo.Admin
 {
@@ -24,6 +25,10 @@ namespace CFT.Demo.Admin
         {
             //services.AddTransient<IStartupFilter, RequestSetOptionsStartupFilter>();
             services.AddTransient<ITest, Test>();
+
+            //Swagger
+            services.AddSwaggerSetup();
+
             services.AddControllers();
         }
 
@@ -89,9 +94,26 @@ namespace CFT.Demo.Admin
             //});
             #endregion
 
-
             //注入静态文件中间件
             app.UseStaticFiles();
+
+            #region Swagger
+            //注册Swagger中间件
+            app.UseSwagger();
+            //注册SwaggerUI(图形界面)
+            app.UseSwaggerUI(options =>
+            {
+                // /swagger/V1/swagger.json  V1 要与 SwaggerDoc的Name一致,否则找不到会报错
+                options.SwaggerEndpoint("/swagger/V1/swagger.json", "ApiHelp V1");
+                //路径配置，设置为空，表示直接访问该文件
+                //路径配置，设置为空，表示直接在根域名（localhost:8001）访问该文件,注意localhost:8001/swagger是访问不到的，
+                //这个时候去launchSettings.json中把"launchUrl": "swagger/index.html"去掉， 然后直接访问localhost:8001/index.html即可
+                options.RoutePrefix = "";
+            }); 
+            #endregion
+
+
+         
 
             app.UseRouting();
 

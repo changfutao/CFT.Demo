@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CFT.Demo.Entity</name>
+    </assembly>
+    <members>
+        <member name="T:CFT.Demo.Entity.Blog">
+            <summary>
+            博客类
+            </summary>
+        </member>
+        <member name="P:CFT.Demo.Entity.Blog.Id">
+            <summary>
+            Id
+            </summary>
+        </member>
+        <member name="P:CFT.Demo.Entity.Blog.Name">
+            <summary>
+            博客名称
+            </summary>
+        </member>
+        <member name="P:CFT.Demo.Entity.Blog.Url">
+            <summary>
+            博客地址
+            </summary>
+        </member>
+    </members>
+</doc>

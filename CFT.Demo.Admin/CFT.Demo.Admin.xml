@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CFT.Demo.Admin</name>
+    </assembly>
+    <members>
+        <member name="M:CFT.Demo.Admin.Controllers.ConfigureController.GetJsonFile">
+            <summary>
+            获取Json文件
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:CFT.Demo.Admin.Controllers.ValidateController.Login(CFT.Demo.Admin.ValidateModels.User)">
+            <summary>
+            登录
+            </summary>
+            Sample request
+            POST /Todo
+            {
+                UserName:"admin",
+                PassWord:"admin"
+            }
+            <param name="user"></param>
+            <returns></returns>
+            <response code="400">If the item is null</response>
+        </member>
+        <member name="T:CFT.Demo.Admin.Filters.RequestSetOptionsStartupFilter">
+            <summary>
+            IStartupFilter 由 ASP.NET Core 用于将默认值添加到管道的开头
+            </summary>
+        </member>
+        <member name="M:CFT.Demo.Admin.Middlewares.RequestSetOptionsMiddleware.Invoke(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            Invoke 名字是固定的写法
+            </summary>
+            <param name="httpContext"></param>
+            <returns></returns>
+        </member>
+        <member name="P:CFT.Demo.Admin.ValidateModels.User.UserName">
+            <summary>
+            用户名
+            </summary>
+        </member>
+        <member name="P:CFT.Demo.Admin.ValidateModels.User.PassWord">
+            <summary>
+            密码
+            </summary>
+        </member>
+    </members>
+</doc>

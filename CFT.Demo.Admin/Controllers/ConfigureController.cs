@@ -23,6 +23,10 @@ namespace CFT.Demo.Admin.Controllers
             _config = config;
             _logger = logger;
         }
+        /// <summary>
+        /// 获取Json文件
+        /// </summary>
+        /// <returns></returns>
         [Route("GetJsonFile")]
         [HttpGet]
         public string GetJsonFile()
