@@ -23,11 +23,24 @@ namespace CFT.Demo.Admin
         }
         public void ConfigureServices(IServiceCollection services)
         {
+            #region 依赖注入生命周期
+            //AddTransient 暂时生存期服务 每次从服务容器进行请求时创建(每次创建都是新的)
+            //AddScoped 每次Http请求创建一次(一次Http请求下,都是同一个)
+            //AddSingleton 整个服务生存周期都是同一个
             //services.AddTransient<IStartupFilter, RequestSetOptionsStartupFilter>();
             services.AddTransient<ITest, Test>();
+            services.AddScoped<ITest, Test1>();
+            services.AddSingleton<ITest, Test2>(); 
+            #endregion
 
             //Swagger
             services.AddSwaggerSetup();
+
+            //
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("RequireAdministratorRole", policy => policy.RequireRole("Administrator"));
+            });
 
             services.AddControllers();
         }
@@ -109,11 +122,11 @@ namespace CFT.Demo.Admin
                 //路径配置，设置为空，表示直接在根域名（localhost:8001）访问该文件,注意localhost:8001/swagger是访问不到的，
                 //这个时候去launchSettings.json中把"launchUrl": "swagger/index.html"去掉， 然后直接访问localhost:8001/index.html即可
                 options.RoutePrefix = "";
-            }); 
+            });
             #endregion
 
-
-         
+            //开启身份验证
+            app.UseAuthentication();
 
             app.UseRouting();
 

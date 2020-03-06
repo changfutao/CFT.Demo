@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CFT.Demo.Admin.ValidateModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CFT.Demo.Admin.Controllers
 {
+    [Authorize("RequireAdministratorRole")]
     [Produces("application/json")]  //声明控制器的操作支持 application/json 的响应内容类型 
     [Route("api/[controller]")]
     [ApiController]

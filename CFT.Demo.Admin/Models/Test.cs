@@ -15,4 +15,26 @@ namespace CFT.Demo.Admin.Models
 
         public string Name { get; set; }
     }
+
+    public class Test1 : ITest
+    {
+        public Test1()
+        {
+            Guid = Guid.NewGuid();
+        }
+        public Guid Guid { get; }
+
+        public string Name { get; set; }
+    }
+
+    public class Test2 : ITest
+    {
+        public Test2()
+        {
+            Guid = Guid.NewGuid();
+        }
+        public Guid Guid { get; }
+
+        public string Name { get; set; }
+    }
 }

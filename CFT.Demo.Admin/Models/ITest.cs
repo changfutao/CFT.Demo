@@ -10,4 +10,10 @@ namespace CFT.Demo.Admin.Models
         Guid Guid { get; }
         string Name { get; set; }
     }
+
+    public interface ITest1
+    {
+        Guid Guid { get; }
+        string Name { get; set; }
+    }
 }
