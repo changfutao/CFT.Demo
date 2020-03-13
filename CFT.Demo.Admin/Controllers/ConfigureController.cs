@@ -58,7 +58,7 @@ namespace CFT.Demo.Admin.Controllers
         [HttpGet]
         public string IOCTest()
         {
-            var test = HttpContext.RequestServices.GetRequiredService<ITest>();
+            var test = HttpContext.RequestServices.GetRequiredService<IOperationScoped>();
             return "";
         }
         [HttpGet(template:"Test1")]

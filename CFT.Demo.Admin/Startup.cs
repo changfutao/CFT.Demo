@@ -28,9 +28,9 @@ namespace CFT.Demo.Admin
             //AddScoped 每次Http请求创建一次(一次Http请求下,都是同一个)
             //AddSingleton 整个服务生存周期都是同一个
             //services.AddTransient<IStartupFilter, RequestSetOptionsStartupFilter>();
-            services.AddTransient<ITest, Test>();
-            services.AddScoped<ITest, Test1>();
-            services.AddSingleton<ITest, Test2>(); 
+            services.AddTransient<IOperationTransient, Operation>();
+            services.AddScoped<IOperationScoped, Operation>();
+            services.AddSingleton<IOperationSingleton, Operation>();
             #endregion
 
             //Swagger
