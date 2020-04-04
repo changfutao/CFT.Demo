@@ -36,7 +36,7 @@ namespace CFT.Demo.Admin.Controllers
             */
             //1.获取Json文件的 key:value  
             string str = _config["testWebUrl"];
-            
+
             //2.获取Json文件的 key:{}
             var testWeb = new TestWeb();
             _config.GetSection("testB").Bind(testWeb);
@@ -50,7 +50,7 @@ namespace CFT.Demo.Admin.Controllers
         [HttpGet]
         public string GetStr(string option)
         {
-         
+
             _logger.LogInformation(option);
             return "";
         }
@@ -61,10 +61,20 @@ namespace CFT.Demo.Admin.Controllers
             var test = HttpContext.RequestServices.GetRequiredService<IOperationScoped>();
             return "";
         }
-        [HttpGet(template:"Test1")]
+        [HttpGet(template: "Test1")]
         public string Test()
         {
             return "test";
         }
+
+        #region 读取分层配置数据
+        [HttpGet("ReadSettingData")]
+        public string ReadSettingData()
+        {
+            //读取json文件时,使用冒号(:)
+            string cnblogs = _config["ExtUrl:A"];
+            return cnblogs;
+        }
+        #endregion
     }
 }

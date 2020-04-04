@@ -82,22 +82,37 @@ namespace CFT.Demo.Admin
 
             app.Use(async (context, next) =>
             {
-                Console.WriteLine("Middleware two start");
+                Console.WriteLine("Middleware two start"); 
                 //调用下一个中间件
                 await next();
-                Console.WriteLine("Middleware two end");
+                Console.WriteLine("Middleware two end------");
             });
 
             //Map 扩展用作约定来创建管道分支
             //Map 基于给定请求路径的匹配项来创建请求管道分支
-            app.Map("/path1", builder => 
+            app.Map(new PathString("/path1"), builder =>
             {
-                builder.Use(async (context, next) => 
+                builder.Use(async (context, next) =>
                 {
                     Console.WriteLine("我是path1分支 start");
                     await next();
                     Console.WriteLine("我是path1分支 end");
                 });
+
+                builder.Use(async (context, next) => 
+                {
+                    Console.WriteLine("我是path2分支 start");
+                    await next();
+                    Console.WriteLine("我是path2分支 end");
+                });
+            });
+
+            app.Use(async (context, next) =>
+            {
+                Console.WriteLine("Middleware three start");
+                //调用下一个中间件
+                await next();
+                Console.WriteLine("Middleware three end------");
             });
 
             //Run 终端中间件

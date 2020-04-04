@@ -23,6 +23,7 @@ namespace CFT.Demo.Admin
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+            //为应用程序添加配置
             .ConfigureAppConfiguration((hostingContext, config) =>  //读取配置
             {
                 //获取当前应用程序路径
@@ -44,6 +45,7 @@ namespace CFT.Demo.Admin
                 //}); 
                 #endregion
                 webBuilder.UseStartup<Startup>()
+                          //配置Kestrel服务器作为默认的Web服务器来负责处理Web请求与响应
                           .UseKestrel(options => //用于指定服务器使用Kestrel 
                           {
                               //限制请求正文的最大值
