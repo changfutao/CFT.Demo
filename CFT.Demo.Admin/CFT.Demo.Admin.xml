@@ -36,6 +36,16 @@
             <param name="httpContext"></param>
             <returns></returns>
         </member>
+        <member name="T:CFT.Demo.Admin.Models.UserDto">
+            <summary>
+            第一步:添加一个需要验证的数据模型
+            </summary>
+        </member>
+        <member name="T:CFT.Demo.Admin.Models.UserValidator">
+            <summary>
+            第二步: 添加校验器类
+            </summary>
+        </member>
         <member name="P:CFT.Demo.Admin.ValidateModels.User.UserName">
             <summary>
             用户名

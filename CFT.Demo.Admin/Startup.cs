@@ -11,6 +11,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using CFT.Demo.Admin.Extensions;
+using Microsoft.AspNetCore.Routing;
+using FluentValidation.AspNetCore;
+using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CFT.Demo.Admin
 {
@@ -31,22 +35,51 @@ namespace CFT.Demo.Admin
             services.AddTransient<IOperationTransient, Operation>();
             services.AddScoped<IOperationScoped, Operation>();
             services.AddSingleton<IOperationSingleton, Operation>();
+
+            //services.Add(new ServiceDescriptor(typeof(IOperationScoped), typeof(Operation), ServiceLifetime.Scoped));
             #endregion
 
             //Swagger
             services.AddSwaggerSetup();
 
+            //添加验证器
+            services.AddSingleton<IValidator<UserDto>, UserValidator>();
             //
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("RequireAdministratorRole", policy => policy.RequireRole("Administrator"));
             });
 
-            services.AddControllers();
+            services.AddControllers(options =>
+            {
+                options.Filters.Add<ActionParameterValidationFilter>();
+            })
+                //模型验证
+                .AddFluentValidation();
+
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.InvalidModelStateResponseFactory = (context) =>
+                  {
+                      var errors = context.ModelState
+                                         .Values
+                                         .SelectMany(x => x.Errors
+                                         .Select(p => p.ErrorMessage))
+                                         .ToList();
+
+                      var result = new
+                      {
+                          Success = false,
+                          Message = "Validation errors",
+                          Error = errors
+                      };
+                      return new BadRequestObjectResult(result);
+                  };
+            });
         }
 
         public void Configure(
-            IApplicationBuilder app, 
+            IApplicationBuilder app,
             IWebHostEnvironment env
             )
         {
@@ -66,56 +99,96 @@ namespace CFT.Demo.Admin
                 app.UseDeveloperExceptionPage();
             }
 
+            #region 路由
+            //var trackPackageRouteHandler = new RouteHandler(context =>
+            // {
+            //    var routeValues = context.GetRouteData().Values;
+            //     return context.Response.WriteAsync($"Hello! Route values:{string.Join(",",routeValues)}");
+            // });
+
+            // var routeBuilder = new RouteBuilder(app, trackPackageRouteHandler);
+
+            // routeBuilder.MapRoute("Track Package Route", "package/{operation}/{id:int}");
+
+            // routeBuilder.MapGet("hello/{name}", context =>
+            //  {
+            //      var name = context.GetRouteValue("name");
+            //      return context.Response.WriteAsync($"Hi, {name}!");
+            //  });
+
+            // var routes = routeBuilder.Build();
+            // app.UseRouter(routes);
+            #endregion
+
             #region Middlewares
-            //中间件顺序是按照注册顺序 1->2->3->2->1 
-            //每一个Use方法,都是在await next(); 前 后执行操作
+            ////中间件:处理Http请求和响应的组件(多个中间件之间链式关系使之形成了管道)
+            ////中间件顺序是按照注册顺序 1->2->3->2->1 
+            ////每一个Use方法,都是在await next(); 前 后执行操作
 
-            //context HttpContext
-            //next 管道中的下一个委托
-            app.Use(async(context, next) => 
-            {
-                Console.WriteLine("Middleware one start");
-                //调用下一个中间件
-                await next();
-                Console.WriteLine("Middleware one end");
-            });
+            ////context HttpContext
+            ////next 管道中的下一个委托
+            //app.Use(async(context, next) => 
+            //{
+            //    Console.WriteLine("Middleware one start");
+            //    //调用下一个中间件
+            //    await next();
+            //    Console.WriteLine("Middleware one end");
+            //});
 
-            app.Use(async (context, next) =>
-            {
-                Console.WriteLine("Middleware two start"); 
-                //调用下一个中间件
-                await next();
-                Console.WriteLine("Middleware two end------");
-            });
+            //app.Use(async (context, next) =>
+            //{
+            //    Console.WriteLine("Middleware two start"); 
+            //    //调用下一个中间件
+            //    await next();
+            //    Console.WriteLine("Middleware two end------");
+            //});
 
-            //Map 扩展用作约定来创建管道分支
-            //Map 基于给定请求路径的匹配项来创建请求管道分支
-            app.Map(new PathString("/path1"), builder =>
-            {
-                builder.Use(async (context, next) =>
-                {
-                    Console.WriteLine("我是path1分支 start");
-                    await next();
-                    Console.WriteLine("我是path1分支 end");
-                });
+            ////Map 扩展用作约定来创建管道分支
+            ////Map 基于给定请求路径的匹配项来创建请求管道分支
+            ////Map 会根据是否匹配指定的请求的路径是否在一个新的分支上继续执行后续的中间件,并且在新分支上执行完毕后,不再回到原来的管道上
+            //app.Map(new PathString("/path1"), builder =>
+            //{
+            //    builder.Use(async (context, next) =>
+            //    {
+            //        Console.WriteLine("我是path1分支 start");
+            //        await next();
+            //        Console.WriteLine("我是path1分支 end");
+            //    });
 
-                builder.Use(async (context, next) => 
-                {
-                    Console.WriteLine("我是path2分支 start");
-                    await next();
-                    Console.WriteLine("我是path2分支 end");
-                });
-            });
+            //    builder.Use(async (context, next) => 
+            //    {
+            //        Console.WriteLine("我是path2分支 start");
+            //        await next();
+            //        Console.WriteLine("我是path2分支 end");
+            //    });
+            //    builder.Run(async context =>
+            //    {
+            //        Console.WriteLine("map end");
+            //        await context.Response.WriteAsync("我是map分支的结束");
+            //    });
+            //});
 
-            app.Use(async (context, next) =>
-            {
-                Console.WriteLine("Middleware three start");
-                //调用下一个中间件
-                await next();
-                Console.WriteLine("Middleware three end------");
-            });
+            //app.MapWhen(context =>
+            //    context.Request.Path.Value == "/maptest"
+            //, app => 
+            //{
+            //    app.Use(async (context, next) =>
+            //    {
+            //        Console.WriteLine("中间件B 开始");
+            //        await next();
+            //        Console.WriteLine("中间件B 结束");
+            //    });
+            //}) ;
 
-            //Run 终端中间件
+            //app.Use(async (context, next) =>
+            //{
+            //    Console.WriteLine("Middleware three start");
+            //    //调用下一个中间件
+            //    await next();
+            //    Console.WriteLine("Middleware three end------");
+            //});
+
+            ////Run 终端中间件
             //app.Run(async context =>
             //{
             //    await context.Response.WriteAsync("request end");
