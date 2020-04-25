@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace CFT.Demo.Admin.Controllers
 {
@@ -15,13 +16,19 @@ namespace CFT.Demo.Admin.Controllers
     {
         private IConfiguration _config;
         private ILogger<ConfigureController> _logger;
+        private UISetting _uiSetting;
+        private UISetting _uiSettingSingleton;
         public ConfigureController(
             IConfiguration config,
-            ILogger<ConfigureController> logger
+            ILogger<ConfigureController> logger,
+            IOptionsSnapshot<UISetting> uiSettingOptions,
+            UISetting uiSettingSingleton
             )
         {
             _config = config;
             _logger = logger;
+            _uiSetting = uiSettingOptions.Value;
+            _uiSettingSingleton = uiSettingSingleton;
         }
         /// <summary>
         /// 获取Json文件
@@ -76,5 +83,21 @@ namespace CFT.Demo.Admin.Controllers
             return cnblogs;
         }
         #endregion
+        [Route("ReadAppSettings")]
+        [HttpGet]
+        public string ReadAppSettings()
+        {
+            string version = _config["Version"];
+            UISetting setting = _uiSetting;
+            return version;
+        }
+        [Route("BindModel")]
+        [HttpGet]
+        public string BindModel()
+        {
+            string aa = "";
+            return aa;
+        }
+
     }
 }

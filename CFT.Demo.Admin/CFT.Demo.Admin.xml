@@ -10,6 +10,18 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:CFT.Demo.Admin.Controllers.LogController.BaseUse">
+            <summary>
+            基本使用
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:CFT.Demo.Admin.Controllers.LogController.ScopeUse">
+            <summary>
+            分组使用
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:CFT.Demo.Admin.Controllers.ValidateController.Login(CFT.Demo.Admin.ValidateModels.User)">
             <summary>
             登录

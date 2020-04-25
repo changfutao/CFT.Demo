@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Routing;
 using FluentValidation.AspNetCore;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace CFT.Demo.Admin
 {
@@ -41,6 +42,14 @@ namespace CFT.Demo.Admin
 
             //Swagger
             services.AddSwaggerSetup();
+
+            //强类型对象
+            services.Configure<UISetting>(_configuration);
+
+            //Bind方法
+            UISetting uiSetting = new UISetting();
+            _configuration.Bind(uiSetting);
+            services.AddSingleton(uiSetting);
 
             //添加验证器
             services.AddSingleton<IValidator<UserDto>, UserValidator>();
@@ -80,9 +89,12 @@ namespace CFT.Demo.Admin
 
         public void Configure(
             IApplicationBuilder app,
-            IWebHostEnvironment env
+            IWebHostEnvironment env,
+            ILogger<Startup> logger
             )
         {
+            logger.LogInformation("进入Startup的Configure方法");
+
             #region IWebHostEnvironment
             //IWebHostEnvironment.ApplicationName Web应用程序名字
             Console.WriteLine($"当前Web应用程序的名字是:{env.ApplicationName}");
@@ -92,6 +104,22 @@ namespace CFT.Demo.Admin
             Console.WriteLine($"当前应用程序的环境:{env.EnvironmentName}");
             //IWebHostEnvironment.WebRootPath 当前Web应用程序wwwroot的绝对目录
             Console.WriteLine($"当前应用程序的wwwroot文件夹的绝对目录:{env.WebRootPath}");
+            #endregion
+
+            #region 错误处理
+            //app.UseExceptionHandler(errorApp => 
+            //{
+            //    errorApp.Run(async context =>
+            //    {
+            //        context.Response.ContentType = "text/plain;charset=utf-8";
+            //        await context.Response.WriteAsync("对不起，请求遇到错误");
+            //    });
+            //});
+
+            //app.Run(context =>
+            //{
+            //    throw new Exception("这里发生异常");
+            //}); 
             #endregion
 
             if (env.IsDevelopment())

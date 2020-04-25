@@ -26,6 +26,11 @@ namespace CFT.Demo.Admin
             //为应用程序添加配置
             .ConfigureAppConfiguration((hostingContext, config) =>  //读取配置
             {
+                var env = hostingContext.HostingEnvironment;
+                //设置工作目录
+                config.SetBasePath(env.ContentRootPath);
+                //config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+                config.AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: false, reloadOnChange: true);
                 //获取当前应用程序路径
                 var path = hostingContext.HostingEnvironment.ContentRootPath+"\\Configs\\questUrl.json";
                 //path: 文件的路径  optional: 是否是必须的  reloadOnChange: 如果json改动，会立即更新
@@ -52,12 +57,23 @@ namespace CFT.Demo.Admin
                               options.Limits.MaxRequestBodySize = 10 * 1024;
                           })  
                           //.UseContentRoot() 为应用程序指定根目录 需注意这和StaticFiles的根是不同的,虽然默认情况下StaticFiles的根是以ContentRoot为依据([ContentRoot/wwwroot])
-                          .ConfigureLogging(logging => //配置日志处理程序
+                          .ConfigureLogging((hostContext,logging) => //配置日志处理程序
                           {
-                              //移除已经注册的其他日志处理程序
-                              logging.ClearProviders();
-                              //设置最小的日志级别
-                              logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+                              ////移除已经注册的其他日志处理程序
+                              //logging.ClearProviders();
+                              //logging.AddConsole();
+                              ////设置最小的日志级别
+                              //logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+
+                              logging.AddConfiguration(hostContext.Configuration.GetSection("Logging"));
+                              //控制台
+                              logging.AddConsole(options => {
+                                  options.IncludeScopes = true;
+                              });
+                              //调试
+                              logging.AddDebug();
+                              //EventSource
+                              logging.AddEventSourceLogger();
                           })
                           .UseNLog();
             });
